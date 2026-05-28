@@ -82,4 +82,4 @@ jobs:
           app-name: 'cnamlivedemoFRO'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: True
+          remote-build: true
