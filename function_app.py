@@ -28,7 +28,7 @@ def helloWorld(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.blob_trigger(arg_name="myblob", path="test",
-                               connection="BlobStorageConnectionString") 
+                               connection="BlobStorageConnectionString")     
 def reactblobfunc(myblob: func.InputStream):
     logging.info(f"Python blob trigger function processed blob"
                 f"Name: {myblob.name}"
@@ -48,3 +48,14 @@ def reactblobfunc(myblob: func.InputStream):
 #         f"Properties: {client.get_blob_properties()}\n"
 #         f"Blob content head: {client.download_blob().read(size=1)}"
 #     )
+
+@app.queue_trigger(arg_name="azqueue", queue_name="filedemessage",
+                               connection="BlobStorageConnectionString")
+# @app.blob_input(arg_name="inputblob",path="test/{name}", 
+#                                connection="BlobStorageConnectionString") 
+@app.blob_output(arg_name="outputblob",path="test/{rand-guid}.txt", 
+                               connection="BlobStorageConnectionString")
+def helllofile(azqueue: func.QueueMessage, outputblob: func.Out[str]):
+    logging.info('Python Queue trigger processed a message: %s',
+                azqueue.get_body().decode('utf-8'))
+    outputblob.set(azqueue.get_body().decode('utf-8'))
